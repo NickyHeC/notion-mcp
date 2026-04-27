@@ -206,7 +206,7 @@ convention = "google"
 # --- RUFF ISORT ---
 
 [tool.ruff.lint.isort]
-known-first-party = ["src"]
+known-first-party = ["notion", "tools", "server"]
 force-single-line = false
 force-sort-within-sections = true
 section-order = [
@@ -277,7 +277,7 @@ log_cli_date_format = "%Y-%m-%d %H:%M:%S"
 # --- COVERAGE ---
 
 [tool.coverage.run]
-source = ["src"]
+source = ["."]
 omit = ["tests/*", "*/tests/*", "test_*.py", "*_test.py"]
 
 [tool.coverage.report]
@@ -314,7 +314,7 @@ unused-ignore-comment      = "ignore"
 # --- TY ENVIRONMENT ---
 
 [tool.ty.environment]
-root = ["src"]
+root = ["."]
 python-platform = "darwin"
 python-version = "3.11"
 
