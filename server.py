@@ -63,6 +63,70 @@ def _ensure_object_schema_fixed(
 
 _schema.ensure_object_schema = _ensure_object_schema_fixed
 
+# ---------------------------------------------------------------------------
+# Second workaround: ToolsService._build_output_schema unconditionally pops
+# $defs from the final schema (line 397 in tools.py). This undoes the hoist
+# above, leaving $ref pointers dangling. Patch it to preserve $defs.
+# Remove once dedalus_mcp >= 0.7.1 ships with the upstream fix.
+# ---------------------------------------------------------------------------
+import inspect
+
+from dedalus_mcp.server.services.tools import ToolsService
+
+_orig_build_output = ToolsService._build_output_schema
+
+
+def _build_output_schema_fixed(self, fn):  # noqa: ANN001, ANN201
+    signature = inspect.signature(fn)
+    annotation = signature.return_annotation
+    if annotation in (inspect.Signature.empty, any, None):
+        return None
+
+    try:
+        from typing import Any, get_type_hints
+
+        closure_ns: dict[str, Any] = {}
+        if fn.__closure__:
+            for cell in fn.__closure__:
+                try:
+                    value = cell.cell_contents
+                except ValueError:
+                    continue
+                name = getattr(value, "__name__", None)
+                if isinstance(name, str):
+                    closure_ns.setdefault(name, value)
+
+        resolved = get_type_hints(fn, include_extras=True, localns=closure_ns)
+        annotation = resolved.get("return", annotation)
+    except (NameError, TypeError):
+        pass
+
+    from dedalus_mcp.server.services.tools import _OUTPUT_SCHEMA_BLOCKLIST, _annotation_contains, _prune_titles
+    from dedalus_mcp.utils.schema import SchemaError, resolve_output_schema
+
+    if annotation in (Any, None):
+        return None
+
+    from dedalus_mcp import types as _mcp_types
+
+    if annotation in (_mcp_types.CallToolResult, _mcp_types.ServerResult):
+        return None
+
+    if _annotation_contains(annotation, _OUTPUT_SCHEMA_BLOCKLIST):
+        return None
+
+    try:
+        envelope = resolve_output_schema(annotation)
+    except SchemaError:
+        return None
+
+    schema = envelope.schema
+    _prune_titles(schema)
+    return schema
+
+
+ToolsService._build_output_schema = _build_output_schema_fixed
+
 
 def create_server() -> MCPServer:
     """Create MCP server with current env config.
