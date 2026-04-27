@@ -9,8 +9,6 @@ Tools:
   notion_create_database -- create a new database
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from dedalus_mcp import HttpMethod, tool

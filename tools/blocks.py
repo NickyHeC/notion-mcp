@@ -8,8 +8,6 @@ Tools:
   notion_append_page_content -- append blocks to a page or block
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from dedalus_mcp import HttpMethod, tool

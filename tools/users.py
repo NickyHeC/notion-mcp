@@ -7,8 +7,6 @@ Tools:
   notion_list_users -- list all users in workspace
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from dedalus_mcp import HttpMethod, tool

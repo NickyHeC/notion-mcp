@@ -7,8 +7,6 @@ Tools:
   notion_upload_file -- create a file upload for use in page blocks
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from dedalus_mcp import HttpMethod, tool

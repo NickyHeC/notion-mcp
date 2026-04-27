@@ -14,8 +14,6 @@ Modules:
   files     -- notion_upload_file
 """
 
-from __future__ import annotations
-
 from tools.blocks import block_tools
 from tools.comments import comment_tools
 from tools.databases import database_tools

@@ -11,8 +11,6 @@ Uses Notion's Enhanced Markdown format (API version 2026-03-11+).
 See https://developers.notion.com/guides/data-apis/enhanced-markdown
 """
 
-from __future__ import annotations
-
 from dedalus_mcp import HttpMethod, tool
 from dedalus_mcp.types import ToolAnnotations
 

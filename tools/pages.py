@@ -9,8 +9,6 @@ Tools:
   notion_update_page -- update page properties
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from dedalus_mcp import HttpMethod, tool

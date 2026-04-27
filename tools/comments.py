@@ -8,8 +8,6 @@ Tools:
   notion_add_comment  -- add a comment to a page or discussion
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from dedalus_mcp import HttpMethod, tool
