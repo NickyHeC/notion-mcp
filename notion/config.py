@@ -20,7 +20,7 @@ from dedalus_mcp.auth import Connection, SecretKeys
 
 
 notion = Connection(
-    name="notion",
+    name="notion-mcp",
     secrets=SecretKeys(token="NOTION_API_KEY"),  # noqa: S106
     base_url="https://api.notion.com/v1",
     auth_header_format="Bearer {api_key}",
