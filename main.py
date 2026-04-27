@@ -3,15 +3,22 @@
 
 """Server entrypoint."""
 
-from dotenv import load_dotenv
+import sys
+import traceback
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
 
-from server import create_server  # noqa: E402
-from tools import notion_tools  # noqa: E402
+    load_dotenv()
 
-server = create_server()
-server.collect(*notion_tools)
+    from server import create_server  # noqa: E402
+    from tools import notion_tools  # noqa: E402
+
+    server = create_server()
+    server.collect(*notion_tools)
+except Exception:
+    traceback.print_exc()
+    sys.exit(1)
 
 if __name__ == "__main__":
     import asyncio
