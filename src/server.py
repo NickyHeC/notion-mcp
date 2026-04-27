@@ -86,4 +86,4 @@ async def main() -> None:
     """Start MCP server."""
     server = create_server()
     server.collect(*notion_tools)
-    await server.serve(host="0.0.0.0", port=8080)
+    await server.serve(host="0.0.0.0")
