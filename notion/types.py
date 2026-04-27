@@ -111,6 +111,26 @@ class DatabaseInfo:
     created_time:     str | None           = None
     last_edited_time: str | None           = None
     archived:         bool                 = False
+    data_sources:     list[dict[str, str]] | None = None  # [{"id": ..., "name": ...}]
+    # fmt: on
+
+
+# --- Data sources ---
+
+
+@dataclass(frozen=True, slots=True)
+class DataSourceInfo:
+    """Data source within a database (API version 2026-03-11+)."""
+
+    # fmt: off
+    id:               str
+    title:            str
+    description:      str | None            = None
+    url:              str | None            = None
+    is_inline:        bool                  = False
+    properties:       dict[str, str] | None = None  # column name -> type
+    created_time:     str | None            = None
+    last_edited_time: str | None            = None
     # fmt: on
 
 

@@ -4,18 +4,20 @@
 """Tool registry for notion-mcp.
 
 Modules:
-  search    -- notion_search
-  pages     -- notion_get_page, notion_create_page, notion_update_page
-  blocks    -- notion_get_page_content, notion_append_page_content
-  databases -- notion_get_database, notion_query_database, notion_create_database
-  markdown  -- notion_get_page_markdown, notion_update_page_markdown
-  comments  -- notion_get_comments, notion_add_comment
-  users     -- notion_list_users
-  files     -- notion_upload_file
+  search       -- notion_search
+  pages        -- notion_get_page, notion_create_page, notion_update_page
+  blocks       -- notion_get_page_content, notion_append_page_content
+  databases    -- notion_get_database, notion_query_database, notion_create_database
+  data_sources -- notion_list_data_sources, notion_get_data_source, notion_query_data_source
+  markdown     -- notion_get_page_markdown, notion_update_page_markdown
+  comments     -- notion_get_comments, notion_add_comment
+  users        -- notion_list_users
+  files        -- notion_upload_file
 """
 
 from tools.blocks import block_tools
 from tools.comments import comment_tools
+from tools.data_sources import data_source_tools
 from tools.databases import database_tools
 from tools.files import file_tools
 from tools.markdown import markdown_tools
@@ -29,6 +31,7 @@ notion_tools = [
     *page_tools,
     *block_tools,
     *database_tools,
+    *data_source_tools,
     *markdown_tools,
     *comment_tools,
     *user_tools,

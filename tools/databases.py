@@ -60,6 +60,15 @@ def _parse_database(raw: JSONObject) -> DatabaseInfo:
             if isinstance(prop, dict)
         }
 
+    ds_raw = raw.get("data_sources", [])
+    data_sources = None
+    if isinstance(ds_raw, list) and ds_raw:
+        data_sources = [
+            {"id": _str(ds.get("id")), "name": _extract_plain_text(ds.get("title", []))}
+            for ds in ds_raw
+            if isinstance(ds, dict)
+        ]
+
     result = DatabaseInfo(
         id=_str(raw.get("id")),
         title=title,
@@ -69,6 +78,7 @@ def _parse_database(raw: JSONObject) -> DatabaseInfo:
         created_time=_opt_str(raw.get("created_time")),
         last_edited_time=_opt_str(raw.get("last_edited_time")),
         archived=_bool(raw.get("archived")),
+        data_sources=data_sources,
     )
     return result
 

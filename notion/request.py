@@ -261,8 +261,13 @@ def _extract_block_text(block: dict[str, Any]) -> str | None:
             return f"[{lang}] {text}" if lang else text
         return text
 
-    if block_type in ("child_page", "child_database"):
+    if block_type == "child_page":
         return type_data.get("title", "")
+    if block_type == "child_database":
+        title = type_data.get("title")
+        if isinstance(title, list):
+            return _extract_plain_text(title)
+        return str(title) if title else ""
     if block_type in ("image", "video", "file", "pdf", "audio"):
         file_data = type_data.get("file") or type_data.get("external")
         if isinstance(file_data, dict):
