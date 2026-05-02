@@ -235,7 +235,6 @@ async def notion_create_database(
     body: dict[str, Any] = {
         "parent": {"type": "page_id", "page_id": parent_id},
         "title": [{"text": {"content": title}}],
-        "properties": properties,
         "is_inline": is_inline,
     }
     if description:
@@ -249,6 +248,18 @@ async def notion_create_database(
     data = response.data
     if not isinstance(data, dict):
         return "Unexpected response"
+
+    # API 2025-09-03+ ignores `properties` on /databases; columns must be
+    # added via the data-source PATCH endpoint instead.
+    ds_list = data.get("data_sources")
+    if isinstance(ds_list, list) and ds_list and properties:
+        ds_id = ds_list[0].get("id") if isinstance(ds_list[0], dict) else None
+        if ds_id:
+            await api_request(
+                HttpMethod.PATCH, f"/data_sources/{ds_id}",
+                body={"properties": properties},
+            )
+
     result = _parse_database(data)
     return result
 
