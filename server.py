@@ -127,6 +127,36 @@ def _build_output_schema_fixed(self, fn):  # noqa: ANN001, ANN201
 
 ToolsService._build_output_schema = _build_output_schema_fixed
 
+# ---------------------------------------------------------------------------
+# Third workaround: normalize_tool_result converts dataclass returns to dicts
+# and uses them as structuredContent directly. But the output schema wraps
+# non-object types in {"result": ...} (the x-dedalus-box envelope). This
+# means a PageInfo return becomes {"id": ..., "title": ...} instead of
+# {"result": {"id": ..., "title": ...}}, failing client-side validation.
+# Patch call_tool to re-wrap structuredContent when the schema is boxed.
+# Remove once dedalus_mcp >= 0.7.1 ships with the upstream fix.
+# ---------------------------------------------------------------------------
+_orig_call_tool = ToolsService.call_tool
+
+
+async def _call_tool_fixed(self, name, arguments):  # noqa: ANN001, ANN201
+    result = await _orig_call_tool(self, name, arguments)
+    tool_def = self._tool_defs.get(name)
+    if (
+        tool_def
+        and tool_def.outputSchema
+        and result.structuredContent is not None
+        and _schema.DEDALUS_BOX_KEY in tool_def.outputSchema
+    ):
+        box_meta = tool_def.outputSchema[_schema.DEDALUS_BOX_KEY]
+        wrap_field = box_meta.get("field", _schema.DEFAULT_WRAP_FIELD)
+        if wrap_field not in result.structuredContent:
+            result.structuredContent = {wrap_field: result.structuredContent}
+    return result
+
+
+ToolsService.call_tool = _call_tool_fixed
+
 
 def create_server() -> MCPServer:
     """Create MCP server with current env config.
