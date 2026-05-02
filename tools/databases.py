@@ -233,7 +233,7 @@ async def notion_create_database(
 
     """
     body: dict[str, Any] = {
-        "parent": {"page_id": parent_id},
+        "parent": {"type": "page_id", "page_id": parent_id},
         "title": [{"text": {"content": title}}],
         "properties": properties,
         "is_inline": is_inline,

@@ -133,7 +133,7 @@ async def notion_create_page(
         props.update(properties)
 
     body: dict[str, Any] = {
-        "parent": {parent_type: parent_id},
+        "parent": {"type": parent_type, parent_type: parent_id},
         "properties": props,
     }
     if children:
